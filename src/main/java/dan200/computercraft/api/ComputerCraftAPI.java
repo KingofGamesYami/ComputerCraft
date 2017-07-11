@@ -8,6 +8,7 @@ package dan200.computercraft.api;
 
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
+import dan200.computercraft.api.lua.ILuaAPIProvider;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.media.IMediaProvider;
 import dan200.computercraft.api.network.IPacketNetwork;
@@ -216,6 +217,17 @@ public final class ComputerCraftAPI
         }
     }
 
+    public static void registerAPIProvider( @Nonnull ILuaAPIProvider handler ){
+        findCC();
+        if( computerCraft_registerAPIProvider != null ){
+            try{
+                computerCraft_registerAPIProvider.invoke( null, handler );
+            } catch (Exception e) {
+                // It failed
+            }
+        }
+    }
+
     /**
      * If there is a Computer or Turtle at a certain position in the world, get it's bundled redstone output.
      *
@@ -354,6 +366,9 @@ public final class ComputerCraftAPI
                 } );
                 computerCraft_getWirelessNetwork = findCCMethod( "getWirelessNetwork", new Class<?>[] {
                 } );
+                computerCraft_registerAPIProvider = findCCMethod( "registerAPIProvider", new Class<?>[] {
+                    ILuaAPIProvider.class
+                } );
             } catch( Exception e ) {
                 System.out.println( "ComputerCraftAPI: ComputerCraft not found." );
             } finally {
@@ -390,4 +405,5 @@ public final class ComputerCraftAPI
     private static Method computerCraft_registerPermissionProvider = null;
     private static Method computerCraft_registerPocketUpgrade = null;
     private static Method computerCraft_getWirelessNetwork = null;
+    private static Method computerCraft_registerAPIProvider = null;
 }

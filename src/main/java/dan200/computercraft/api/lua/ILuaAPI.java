@@ -4,8 +4,7 @@
  * Send enquiries to dratcliffe@gmail.com
  */
 
-package dan200.computercraft.core.apis;
-import dan200.computercraft.api.lua.ILuaObject;
+package dan200.computercraft.api.lua;
 
 public interface ILuaAPI extends ILuaObject
 {

@@ -9,9 +9,11 @@ package dan200.computercraft;
 import com.google.common.base.CaseFormat;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
+import dan200.computercraft.api.lua.ILuaAPIProvider;
 import dan200.computercraft.api.media.IMedia;
 import dan200.computercraft.api.media.IMediaProvider;
 import dan200.computercraft.api.network.IPacketNetwork;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
@@ -19,6 +21,7 @@ import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.core.apis.AddressPredicate;
+import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.filesystem.ComboMount;
 import dan200.computercraft.core.filesystem.FileMount;
 import dan200.computercraft.core.filesystem.JarMount;
@@ -240,6 +243,7 @@ public class ComputerCraft
     private static List<IMediaProvider> mediaProviders = new ArrayList<IMediaProvider>();
     private static List<ITurtlePermissionProvider> permissionProviders = new ArrayList<ITurtlePermissionProvider>();
     private static final Map<String, IPocketUpgrade> pocketUpgrades = new HashMap<String, IPocketUpgrade>();
+    private static List<ILuaAPIProvider> apiProviders = new ArrayList<ILuaAPIProvider>();
 
     // Implementation
     @Mod.Instance( value = ComputerCraft.MOD_ID )
@@ -644,6 +648,18 @@ public class ComputerCraft
         if( provider != null && !mediaProviders.contains( provider ) )
         {
             mediaProviders.add( provider );
+        }
+    }
+
+    public static void registerAPIProvider( ILuaAPIProvider provider ){
+        if( provider != null && !apiProviders.contains( provider ) ) {
+            apiProviders.add(provider);
+        }
+    }
+
+    public static void addRegisteredAPIs( Computer computer ){
+        for( ILuaAPIProvider provider : apiProviders ){
+            computer.addAPI( provider.getLuaAPI( (IComputerAccess)computer ) );
         }
     }
 
