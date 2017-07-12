@@ -12,24 +12,19 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by steve on 7/11/2017.
- */
 public class APIWrapper implements IComputerAccess {
     private Set<String> m_mounts;
 
     private final IAPIEnvironment m_environment;
     private FileSystem m_fileSystem;
 
-    public APIWrapper( Computer computer )
-        {
-            m_environment = computer.getAPIEnvironment();
-            m_mounts = new HashSet<String>();
-            m_fileSystem = m_environment.getFileSystem();
-        }
+    public APIWrapper( Computer computer ) {
+        m_environment = computer.getAPIEnvironment();
+        m_mounts = new HashSet<String>();
+        m_fileSystem = m_environment.getFileSystem();
+    }
 
-        // IComputerAccess implementation
-
+    // IComputerAccess implementation
 
     @Nullable
     @Override
@@ -38,92 +33,85 @@ public class APIWrapper implements IComputerAccess {
     }
 
     @Override
-        public synchronized String mount( @Nonnull String desiredLoc, @Nonnull IMount mount, @Nonnull String driveName )
+    public synchronized String mount( @Nonnull String desiredLoc, @Nonnull IMount mount, @Nonnull String driveName ) {
+        // Mount the location
+        String location;
+        synchronized( m_fileSystem )
         {
-
-            // Mount the location
-            String location;
-            synchronized( m_fileSystem )
-            {
-                location = findFreeLocation( desiredLoc );
-                if( location != null )
-                {
-                    try {
-                        m_fileSystem.mount( driveName, location, mount );
-                    } catch( FileSystemException e ) {
-                        // fail and return null
-                    }
-                }
-            }
+            location = findFreeLocation( desiredLoc );
             if( location != null )
             {
-                m_mounts.add( location );
-            }
-            return location;
-        }
-
-        @Override
-        public String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount )
-        {
-            return mountWritable( desiredLoc, mount, "api" );
-        }
-
-        @Override
-        public synchronized String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount, @Nonnull String driveName )
-        {
-            // Mount the location
-            String location;
-            synchronized( m_fileSystem )
-            {
-                location = findFreeLocation( desiredLoc );
-                if( location != null )
-                {
-                    try {
-                        m_fileSystem.mountWritable( driveName, location, mount );
-                    } catch( FileSystemException e ) {
-                        // fail and return null
-                    }
+                try {
+                    m_fileSystem.mount( driveName, location, mount );
+                } catch( FileSystemException e ) {
+                    // fail and return null
                 }
             }
-            if( location != null )
-            {
-                m_mounts.add( location );
-            }
-            return location;
         }
-
-        @Override
-        public synchronized void unmount( String location )
+        if( location != null )
         {
+            m_mounts.add( location );
+        }
+        return location;
+    }
+
+    @Override
+    public String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount ) {
+        return mountWritable( desiredLoc, mount, "api" );
+    }
+
+    @Override
+    public synchronized String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount, @Nonnull String driveName ) {
+        // Mount the location
+        String location;
+        synchronized( m_fileSystem )
+        {
+            location = findFreeLocation( desiredLoc );
             if( location != null )
             {
-                if( !m_mounts.contains( location ) ) {
-                    throw new RuntimeException( "You didn't mount this location" );
+                try {
+                    m_fileSystem.mountWritable( driveName, location, mount );
+                } catch( FileSystemException e ) {
+                    // fail and return null
                 }
-
-                m_fileSystem.unmount( location );
-                m_mounts.remove( location );
             }
         }
-
-        @Override
-        public synchronized int getID()
+        if( location != null )
         {
-            return m_environment.getComputerID();
+            m_mounts.add( location );
         }
+        return location;
+    }
 
-        @Override
-        public synchronized void queueEvent( @Nonnull final String event, final Object[] arguments )
+    @Override
+    public synchronized void unmount( String location ) {
+        if( location != null )
         {
-            m_environment.queueEvent( event, arguments );
-        }
+            if( !m_mounts.contains( location ) ) {
+                throw new RuntimeException( "You didn't mount this location" );
+            }
 
-        @Nonnull
-        @Override
-        public synchronized String getAttachmentName()
-        {
-            return "api";
+            m_fileSystem.unmount( location );
+            m_mounts.remove( location );
         }
+    }
+
+    @Override
+    public synchronized int getID() {
+        return m_environment.getComputerID();
+    }
+
+    @Override
+    public synchronized void queueEvent( @Nonnull final String event, final Object[] arguments ) {
+        m_environment.queueEvent( event, arguments );
+    }
+
+    @Nonnull
+    @Override
+    public synchronized String getAttachmentName() {
+        return "api";
+    }
+
     private String findFreeLocation( String desiredLoc )
     {
         try
