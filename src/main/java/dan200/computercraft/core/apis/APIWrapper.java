@@ -20,12 +20,12 @@ public class APIWrapper implements IComputerAccess {
 
     private final IAPIEnvironment m_environment;
     private FileSystem m_fileSystem;
-    private boolean m_running;
 
     public APIWrapper( Computer computer )
         {
             m_environment = computer.getAPIEnvironment();
             m_mounts = new HashSet<String>();
+            m_fileSystem = m_environment.getFileSystem();
         }
 
         // IComputerAccess implementation
