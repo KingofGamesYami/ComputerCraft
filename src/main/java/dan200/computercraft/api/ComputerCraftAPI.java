@@ -217,6 +217,12 @@ public final class ComputerCraftAPI
         }
     }
 
+    /**
+     * Registers an API handler to provide an API to all computers
+     *
+     * @param handler The API provider to register.
+     * @see dan200.computercraft.api.lua.ILuaAPIProvider
+     */
     public static void registerAPIProvider( @Nonnull ILuaAPIProvider handler ){
         findCC();
         if( computerCraft_registerAPIProvider != null ){

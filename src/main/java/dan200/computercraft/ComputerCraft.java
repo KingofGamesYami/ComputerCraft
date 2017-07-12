@@ -20,6 +20,7 @@ import dan200.computercraft.api.permissions.ITurtlePermissionProvider;
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.core.apis.APIWrapper;
 import dan200.computercraft.core.apis.AddressPredicate;
 import dan200.computercraft.core.computer.Computer;
 import dan200.computercraft.core.filesystem.ComboMount;
@@ -658,8 +659,9 @@ public class ComputerCraft
     }
 
     public static void addRegisteredAPIs( Computer computer ){
+        APIWrapper apiWrapper = new APIWrapper( computer );
         for( ILuaAPIProvider provider : apiProviders ){
-            computer.addAPI( provider.getLuaAPI( (IComputerAccess)computer ) );
+            computer.addAPI( provider.getLuaAPI( apiWrapper ) );
         }
     }
 
