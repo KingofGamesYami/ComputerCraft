@@ -8,12 +8,12 @@ import dan200.computercraft.core.filesystem.FileSystem;
 import dan200.computercraft.core.filesystem.FileSystemException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
 public class APIWrapper implements IComputerAccess {
     private Set<String> m_mounts;
+    private final String m_side = "api";
 
     private final IAPIEnvironment m_environment;
     private FileSystem m_fileSystem;
@@ -25,15 +25,16 @@ public class APIWrapper implements IComputerAccess {
     }
 
     // IComputerAccess implementation
-
-    @Nullable
     @Override
-    public String mount(@Nonnull String desiredLocation, @Nonnull IMount mount) {
-        return mount( desiredLocation, mount, "api" );
+    public String mount( @Nonnull String desiredLoc, @Nonnull IMount mount )
+    {
+        return mount( desiredLoc, mount, m_side );
     }
 
     @Override
-    public synchronized String mount( @Nonnull String desiredLoc, @Nonnull IMount mount, @Nonnull String driveName ) {
+    public synchronized String mount( @Nonnull String desiredLoc, @Nonnull IMount mount, @Nonnull String driveName )
+    {
+
         // Mount the location
         String location;
         synchronized( m_fileSystem )
@@ -56,12 +57,14 @@ public class APIWrapper implements IComputerAccess {
     }
 
     @Override
-    public String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount ) {
-        return mountWritable( desiredLoc, mount, "api" );
+    public String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount )
+    {
+        return mountWritable( desiredLoc, mount, m_side );
     }
 
     @Override
-    public synchronized String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount, @Nonnull String driveName ) {
+    public synchronized String mountWritable( @Nonnull String desiredLoc, @Nonnull IWritableMount mount, @Nonnull String driveName )
+    {
         // Mount the location
         String location;
         synchronized( m_fileSystem )
@@ -84,7 +87,8 @@ public class APIWrapper implements IComputerAccess {
     }
 
     @Override
-    public synchronized void unmount( String location ) {
+    public synchronized void unmount( String location )
+    {
         if( location != null )
         {
             if( !m_mounts.contains( location ) ) {
@@ -114,6 +118,7 @@ public class APIWrapper implements IComputerAccess {
 
     private String findFreeLocation( String desiredLoc )
     {
+        m_fileSystem = m_environment.getFileSystem();
         try
         {
             synchronized( m_fileSystem )

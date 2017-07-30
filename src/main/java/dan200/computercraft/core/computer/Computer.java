@@ -11,7 +11,6 @@ import dan200.computercraft.ComputerCraft;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.filesystem.IWritableMount;
 import dan200.computercraft.api.lua.ILuaAPI;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.core.apis.*;
 import dan200.computercraft.core.filesystem.FileSystem;
@@ -249,7 +248,6 @@ public class Computer
 
         m_rootMount = null;
         createAPIs();
-        ComputerCraft.addRegisteredAPIs( this );
     }
     
     public IAPIEnvironment getAPIEnvironment()

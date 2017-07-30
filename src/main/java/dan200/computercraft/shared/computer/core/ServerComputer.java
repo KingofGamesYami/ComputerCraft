@@ -213,6 +213,7 @@ public class ServerComputer extends ServerTerminal
     {
         // Turn on
         m_computer.turnOn();
+        ComputerCraft.addRegisteredAPIs( m_computer );
     }
 
     @Override
