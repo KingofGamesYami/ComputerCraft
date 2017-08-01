@@ -663,6 +663,7 @@ public class ComputerCraft
         for( ILuaAPIProvider provider : apiProviders ){
             computer.addAPI( provider.getLuaAPI( apiWrapper ) );
         }
+        log.debug( "Added APIs to computer #" + computer.getID() );
     }
 
     public static IPeripheral getPeripheralAt( World world, BlockPos pos, EnumFacing side )

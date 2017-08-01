@@ -464,6 +464,10 @@ public class Computer
             if( s_romMount != null )
             {
                 m_fileSystem.mount( "rom", "rom", s_romMount );
+
+                //Add APIs
+                ComputerCraft.addRegisteredAPIs( this );
+
                 return true;
             }
             return false;
